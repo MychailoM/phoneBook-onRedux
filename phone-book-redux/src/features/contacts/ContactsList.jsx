@@ -1,27 +1,46 @@
-import store from "../../app/store";
 import { deleteContacts } from "./contactsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import styles from "./ContactsList.module.css";
+import PropTypes from "prop-types";
 
 const ContactList = () => {
   const contacts = useSelector((state) => state.contacts);
   const filter = useSelector((state) => state.filter);
   const dispatch = useDispatch();
+
   const filtered = contacts.filter((contact) =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
-    <ul>
+    <ul className={styles.list}>
       {filtered.map(({ id, name, phone }) => (
-        <li key={id}>
-          <h2>
+        <li className={styles.item} key={id}>
+          <h2 className={styles.text}>
             {name}: {phone}
           </h2>
-          <button onClick={() => dispatch(deleteContacts(id))}>x</button>
+
+          <button
+            className={styles.deleteBtn}
+            onClick={() => dispatch(deleteContacts(id))}
+          >
+            x
+          </button>
         </li>
       ))}
     </ul>
   );
+};
+
+ContactList.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      phone: PropTypes.string,
+    })
+  ),
+  filter: PropTypes.string,
 };
 
 export default ContactList;
